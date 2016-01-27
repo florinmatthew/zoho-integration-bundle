@@ -1,0 +1,28 @@
+## YAML Template.
+---
+orocrm:
+    zoho:
+        #Check zohocrm connection
+        token: 
+            success:        Token successfully loaded.
+            error:          Error obtaining authorization token.
+            server_error:   There was an error checking connection.
+            account_registration_not_confirmed: Account registration not confirmed.
+            exceeded_maximum_allowed_authtokens: Maxiumu alowed authtokens exceeded. Go to 'https://accounts.zoho.com/u/h#sessions/userauthtoken' and delete at least one token.
+            api_access_request_blocked: Resquest to ZohoCRM API blocked.
+            unknown:        Unknown error. 
+            params:
+                auth_url:       Invalid authorization url.
+                auth_params:    Invalid authorization parameters.
+                
+        org:
+            success: Organizations successful loaded.
+            server_error: There was an error syncing organizations list.
+            params: 
+                token: Invalid token value.
+                api_url: Invalid invoice API url.
+                
+                
+                    
+        
+        

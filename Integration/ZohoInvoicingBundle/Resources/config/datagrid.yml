@@ -1,0 +1,120 @@
+datagrid:
+    zoho-product-datagrid:
+
+        options:
+            skip_acl_check: true
+
+        source:
+            type: orm
+            query:
+                select:
+                  - product.name
+                  - product.description
+                  - product.status
+                  - product.rate
+                from: 
+                  - {table: %integration.zohoinvoicingbundle.entity.product.class%, alias: product}
+
+        columns:
+            name:
+                label: integration.zohoinvoicing.grid.product.name.label
+            description:
+                label: integration.zohoinvoicing.grid.product.description.label
+            rate:
+                label: Price
+            status:
+                label: Status
+
+        sorters:
+            columns:
+                name:
+                    data_name: product.name
+                description:
+                    data_name: product.description
+                rate:
+                    data_name: product.rate
+                status:
+                    data_name: product.status
+                    
+    zoho-tax-datagrid:
+        options:
+            skip_acl_check: true
+
+        source:
+            type: orm
+            query:
+                select:
+                  - tax.taxName
+                  - tax.taxPercentage
+                from: 
+                  - {table: %integration.zohoinvoicingbundle.entity.tax.class%, alias: tax}
+
+        columns:
+            taxName:
+                label: Tax name
+            taxPercentage:
+                label: Percentage
+            
+        sorters:
+            columns:
+                taxName:
+                    data_name: tax.taxName
+                    
+    zoho-invoice-datagrid:
+        source:
+            type: orm
+            query:
+                select:
+                    - invoice.customerName
+                    - invoice.status
+                    - invoice.invoiceNumber
+                    - invoice.date
+                    - invoice.dueDate
+                    - invoice.total
+                    - invoice.ballance
+                from:
+                    - {table: %integration.zohoinvoicingbundle.entity.invoice.class%, alias: invoice}
+
+        columns:
+            customerName:
+                label: integration.zohoinvoicing.grid.invoice.customerName.label
+
+            status:
+                label: integration.zohoinvoicing.grid.invoice.status.label
+
+            invoiceNumber:
+                label: integration.zohoinvoicing.grid.invoice.invoiceNumber.label
+                frontend_type: number
+
+            date:
+                label: integration.zohoinvoicing.grid.invoice.date.label
+                frontend_type: datetime
+
+            dueDate:
+                label: integration.zohoinvoicing.grid.invoice.dueDate.label
+                frontend_type: datetime
+
+            total:
+                label: integration.zohoinvoicing.grid.invoice.total.label
+                frontend_type: number
+
+            balance:
+                label: integration.zohoinvoicing.grid.invoice.balance.label
+                frontend_type: number
+
+        sorters:
+            columns:
+                customerName:
+                    data_name: invoice.customerName
+                status:
+                    data_name: invoice.status
+                invoiceNumber:
+                    data_name: invoice.number
+                date:
+                    data_name: invoice.date
+                dueDate:
+                    data_name: invoice.dueDate
+                total:
+                    data_name: invoice.total
+                balance:
+                    data_name: invoice.ballance

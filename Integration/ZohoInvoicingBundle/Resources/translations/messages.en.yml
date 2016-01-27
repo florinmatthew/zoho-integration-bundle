@@ -1,0 +1,85 @@
+## YAML Template.
+---
+integration: #integration.zohoinvoicing.entity.product.class
+    zohoinvoicing:
+        title:
+          label: ZohoIntegration
+        menu:
+            index.label: Invoicing
+        channel_type:
+            label:  Magento
+        connector:
+            product:
+                label: Zoho Product connector
+                initial.label: Initial Zoho product connector
+            currencies:
+                label: Zoho Currencies connector
+                initial.label: Initial Zoho tax connector
+            tax:
+                label: Zoho Tax connector
+                initial.label: Initial Zoho tax connector
+            invoice:
+                label: Zoho Invoice connector
+                initial.label: Initial Zoho invoice connector
+        invoice:
+            entity_label: ZohoCRM invoicing
+            entity_plural_label:  Zoho invoicing services
+            entity_description:   Invoice import channel
+            navigation: 
+                tab:
+                    label: Invoices
+        items:
+            entity_label: ZohoCRM items
+            entity_plural_label:  Zoho invoicing items
+            entity_description:   Items import channel
+        product:
+            entity_label: ZohoCRM Product
+            entity_plural_label:  Zoho products services
+            entity_description:   Invoice import channel
+            navigation: 
+                tab:
+                    label: Products
+        tax:
+            entity_label: ZohoCRM Tax
+            entity_plural_label:  Zoho taxes
+            entity_description:   Tax entity
+            navigation: 
+                tab:
+                    label: Taxes
+        currencies:
+            entity_label: ZohoCRM Currencies
+            entity_plural_label:  Zoho currencies
+            entity_description:   Currencies entity
+            navigation: 
+                tab:
+                    label: Currencies
+        
+        navigation:
+            tab:
+                label: ZohoCRM
+        grid:
+            invoice:
+                total:
+                    label: Total
+                customerName:
+                    label: Customer Name
+                status:
+                    label: Status
+                invoiceNumber:
+                    label: Invoice Number
+                date:
+                    label: Date
+                dueDate:
+                    label: Due Date
+                balance:
+                    label: Balance
+            product:
+                name:
+                    label: Name
+                description:
+                    label: Description
+                    
+        restransport:
+            organizations:
+                list:
+                    label: Organizations list.

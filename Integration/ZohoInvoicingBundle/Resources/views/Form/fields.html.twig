@@ -1,0 +1,76 @@
+{% macro getRestCheckerOptions(form, elSelector) %}
+    {% set restCheckerOptions = {
+        el:             elSelector,
+        authApiUrl:     '#' ~ form.auth_api_url.vars.id,
+        scope:          '#' ~ form.scope.vars.id,
+        email:          '#' ~ form.email.vars.id,
+        password:       '#' ~ form.password.vars.id,
+        transportEntityId: form.vars.value ? form.vars.value.id : null,
+        authTokenField: '#' ~ form.auth_token.vars.id,
+       } 
+    %}
+    {{ restCheckerOptions|json_encode|raw }}
+{% endmacro %}
+
+{% macro getOrgsOptions(form, elSelector) %}
+    {%  set options = {
+            el: elSelector,
+            authTokenField: '#' ~ form.auth_token.vars.id,
+            apiUrl: '#' ~ form.api_url.vars.id,
+            organizationEl: '#' ~ form.organization_idvalue.vars.id,
+            organizationsList:  '#' ~ form.organizations.vars.id
+        }
+    %}
+    {{ options|json_encode|raw }}
+{% endmacro %}
+    {{ form_errors(form) }}
+{% block integration_zohoinvoicingbundle_rest_transport_check_button_widget %}
+    {% set entity = form.parent.vars.value %}
+    <div class="control-group">
+        <div class="controls">
+            <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
+            <script type="text/javascript">
+                require(['orocrm/zoho/rest-checker'], function (RestChecker) {
+                    "use strict";
+                    new RestChecker({{ _self.getRestCheckerOptions(form.parent, '#' ~ form.vars.id) }});
+                });
+            </script>
+            {% if messageType is defined and message is defined %}
+                    <div class="alert alert-{{ messageType }} connection-status">{{ message }}</div>
+                {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block integration_zohoinvoicingbundle_rest_transport_check_button_row %}
+   {{ block('button_row') }}
+{% endblock %}
+
+{% block zoho_integration_rest_transport_organization_select_row %}
+    {% spaceless %}
+    <div class="control-group{% if attr.class is defined %} {{ attr.class }}{% endif %}">
+        {% if label is not sameas(false) %}
+            {{ form_label(form, '' , { label_attr: label_attr|merge({ class: 'control-label' })}) }}
+        {% endif %}
+        <div class="controls{% if errors|length > 0 %} validation-error{% endif %} magento-website-selector-container">
+            {{ form_widget(form) }}
+            {% if form.vars.disabled is not sameas(true) %}
+                <a href="javascript:void(0)" class="no-hash sync-website-list-link">
+                    <i class="icon icon-refresh"></i>{{ 'Sync organizations list'|trans }}
+                </a>
+                <script type="text/javascript">
+                    require(['orocrm/zoho/organizations'], function (getOrgsObject) {
+                        "use strict";
+                        new getOrgsObject({{ _self.getOrgsOptions(form.parent, '.sync-website-list-link') }});
+                    })
+                </script>
+                {% if messageType is defined and message is defined %}
+                    <div class="alert alert-{{ messageType }} connection-status">{{ message }}</div>
+                {% endif %}
+            {% endif %}
+            <div class="clear-fix"></div>
+            {{ form_errors(form) }}
+        </div>
+    </div>
+    {% endspaceless %}
+{% endblock %}

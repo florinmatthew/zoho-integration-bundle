@@ -1,0 +1,45 @@
+## YAML Template.
+---
+connector:
+    name: oro_importexport
+    jobs:
+        zoho_currencies_import:
+            title: "Sync currencies from ZohoCRM"
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                            reader:    orocrm_zoho.zoho_integration.currencies_connector
+                            processor: orocrm_zoho.importexport.processor.import_currencies
+                            writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 50
+        zoho_tax_import:
+            title: "Sync products from ZohoCRM"
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                            reader:    orocrm_zoho.zoho_integration.tax_connector
+                            processor: orocrm_zoho.importexport.processor.import_tax
+                            writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 50      
+        zoho_product_import:
+            title: "Sync products from ZohoCRM"
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                            reader:    orocrm_zoho.zoho_integration.product_connector
+                            processor: orocrm_zoho.importexport.processor.import_product
+                            writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 50
+                        

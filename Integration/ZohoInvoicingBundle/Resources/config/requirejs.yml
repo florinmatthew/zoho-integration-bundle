@@ -1,0 +1,4 @@
+config:
+    paths:
+        'orocrm/zoho/rest-checker': 'bundles/integrationzohoinvoicing/js/rest-checker.js'
+        'orocrm/zoho/organizations': 'bundles/integrationzohoinvoicing/js/get-organizations.js'

@@ -1,0 +1,121 @@
+## YAML Template.
+
+parameters:
+    integration.zohoinvoicingbundle.entity.product.class: Integration\ZohoInvoicingBundle\Entity\Product
+    integration.zohoinvoicingbundle.entity.tax.class: Integration\ZohoInvoicingBundle\Entity\Tax
+    integration.zohoinvoicingbundle.entity.invoice.class: Integration\ZohoInvoicingBundle\Entity\Invoice
+    integration.zohoinvoicingbundle.channel.class: Integration\ZohoInvoicingBundle\Provider\ChannelType
+    integration.zohoinvoicingbundle.transport.rest_transport.class: Integration\ZohoInvoicingBundle\Provider\Transport\RESTransport
+    integration.zohoinvoicingbundle.transport.rest_check_auth_token.class: Integration\ZohoInvoicingBundle\Provider\Transport\ZohoCRMTokenRequest
+    integration.zohoinvoicingbundle.rest_transport_check.class: Integration\ZohoInvoicingBundle\Form\Type\RESTransportCheckButtonType
+    integration.zohoinvoicingbundle.rest_transport.organization_select.class: Integration\ZohoInvoicingBundle\Form\Type\CompaniesListType
+    integration.zohoinvoicingbundle.connector.class: Integration\ZohoInvoicingBundle\Provider\Connector\ZohoConnectorInterface
+    integration.zohoinvoicingbundle.form.rest_transport_settings.class: Integration\ZohoInvoicingBundle\Form\Type\RESTransportSettingsType
+    integration.zohoinvoicingbundle.form.subscriber.rest_transport_settings.class: Integration\ZohoInvoicingBundle\Form\EventListener\RESTSettingsFormSubscriber
+    integration.zohoinvoicingbundle.event_listener.channel_save_succeed.class: Integration\ZohoInvoicingBundle\EventListener\ChannelSaveSucceedListener
+    integration.zohoinvoicingbundle.sync_helper.product.class: Integration\ZohoInvoicingBundle\Model\SyncHelper\ProductSyncHelper
+    integration.zohoinvoicingbundle.sync_helper.tax.class: Integration\ZohoInvoicingBundle\Model\SyncHelper\TaxSyncHelper
+    integration.zohoinvoicingbundle.sync_helper.currencies.class: Integration\ZohoInvoicingBundle\Model\SyncHelper\CurrenciesSyncHelper
+    integration.zohoinvoicingbundle.entity_provider.zoho.class: Integration\ZohoInvoicingBundle\Model\EntityProvider\ZohoEntityProvider
+    integration.zohoinvoicingbundle.entity_provider.oro.class: Integration\ZohoInvoicingBundle\Model\EntityProvider\OroEntityProvider
+services:
+#    integration.zohoinvoicingbundle.provider.channel_type:
+#        class: %integration.zohoinvoicingbundle.channel.class%
+#        tags:
+#            - { name: oro_integration.channel, type: zoho }
+#            
+    integration.zohoinvoicingbundle.form.subscriber.rest_transport_settings:
+        class: %integration.zohoinvoicingbundle.form.subscriber.rest_transport_settings.class%
+        arguments:
+            - @oro_security.encoder.mcrypt
+            
+    #Transport Settings
+    integration.zohoinvoicingbundle.zoho.transport.settings:
+        class: %integration.zohoinvoicingbundle.form.rest_transport_settings.class%
+        arguments:
+            - @integration.zohoinvoicingbundle.rest_transport
+            - @integration.zohoinvoicingbundle.form.subscriber.rest_transport_settings
+            - @oro_integration.manager.types_registry
+        tags:
+            - { alias: form.type, name: zoho_integration_rest_transport_setting_form_type }
+    
+    #Transport
+    integration.zohoinvoicingbundle.rest_transport:
+        class: %integration.zohoinvoicingbundle.transport.rest_transport.class%
+        arguments:
+            - @oro_importexport.serializer 
+        tags:
+            - { name: oro_integration.transport, type: zoho_rest, channel_type: zoho }
+        
+    #Transport check
+    integration.zohoinvoicingbundle.rest_transport_check:
+        class: %integration.zohoinvoicingbundle.rest_transport_check.class%
+        tags:
+            - { name: form.type, alias: integration_zohoinvoicingbundle_rest_transport_check_button }
+            
+    integration.zohoinvoicingbundle.rest_transport.organization_select:
+        class: %integration.zohoinvoicingbundle.rest_transport.organization_select.class%
+        tags:
+            - { name: form.type, alias: zoho_integration_rest_transport_organization_select }
+            
+    #Connector        
+    integration.zohoinvoicingbundle.zoho.connector:
+        class: %integration.zohoinvoicingbundle.connector.class%
+        tags:
+            - { name: zoho_integration.connector, type: zoho_rest, channel_type: zoho }
+            
+    #Helpers
+    integration.zohoinvoicingbundle.sync_helper.abstract:
+        abstract: true
+        arguments:
+            - @integration.zohoinvoicingbundle.entity_provider.zoho
+            - @integration.zohoinvoicingbundle.entity_provider.oro
+            
+    integration.zohoinvoicingbundle.sync_helper.product:
+        parent: integration.zohoinvoicingbundle.sync_helper.abstract
+        class: %integration.zohoinvoicingbundle.sync_helper.product.class%
+        
+    integration.zohoinvoicingbundle.sync_helper.tax:
+        parent: integration.zohoinvoicingbundle.sync_helper.abstract
+        class: %integration.zohoinvoicingbundle.sync_helper.tax.class%
+        
+    integration.zohoinvoicingbundle.sync_helper.currencies:
+        parent: integration.zohoinvoicingbundle.sync_helper.abstract
+        class: %integration.zohoinvoicingbundle.sync_helper.currencies.class%
+        
+    #Entity providers
+    integration.zohoinvoicingbundle.entity_provider.zoho:
+        class: %integration.zohoinvoicingbundle.entity_provider.zoho.class%
+        arguments:
+            - @doctrine
+            
+    integration.zohoinvoicingbundle.entity_provider.oro:
+        class: %integration.zohoinvoicingbundle.entity_provider.oro.class%
+        arguments:
+            - @doctrine
+    
+    #Auth token check
+    integration.zohoinvoicingbundle.transport.rest_check_auth_token:
+        class: %integration.zohoinvoicingbundle.transport.rest_check_auth_token.class%
+            
+    zoho_integration_rest_transport_setting_form_type:
+        class: Integration\ZohoInvoicingBundle\Form\Type\RESTransportSettingsType
+        arguments:
+            - @integration.zohoinvoicingbundle.rest_transport
+            - @integration.zohoinvoicingbundle.form.subscriber.rest_transport_settings
+            - @oro_integration.manager.types_registry
+        tags:
+            - { name: form.type }
+            
+    #Event listeners
+    integration.zohoinvoicingbundle.event_listener.channel_save_succeed:
+        class: %integration.zohoinvoicingbundle.event_listener.channel_save_succeed.class%
+        arguments:
+            - @orocrm_channel.provider.settings_provider
+            - @doctrine
+        calls:
+            - [setConnectorsTypeRegistry, [@oro_integration.manager.types_registry]]
+        tags:
+            - { name: kernel.event_listener, event: orocrm_channel.channel.save_succeed, method: onChannelSucceedSave, priority: -10 }
+    
+    

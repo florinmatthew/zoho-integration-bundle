@@ -1,0 +1,36 @@
+oro_menu_config:
+    items:
+        zoho_tab:
+            label: 'integration.zohoinvoicing.navigation.tab.label'
+            uri: '#'
+            display: true
+            extras:
+                position: 300
+                # icon: icon-gear
+        zoho_product_link:
+            label: integration.zohoinvoicing.product.navigation.tab.label
+            route: zoho_product_index
+            display: true
+        
+        zoho_tax_link:
+            label: integration.zohoinvoicing.tax.navigation.tab.label
+            route: zoho_tax_index
+            display: true
+
+        zoho_invoice_link:
+            display: false
+            label: integration.zohoinvoicing.invoice.navigation.tab.label
+            route: zoho_invoice_index
+
+    tree:
+        application_menu:
+            children:
+                zoho_tab:
+                    children:
+                        zoho_product_link: ~
+                        zoho_invoice_link: ~
+                        zoho_tax_link: ~
+
+oro_titles:
+    zoho_product_index: integration.zohoinvoicing.product.entity.plural.label - integration.zohoinvoicing.title.label
+    zoho_invoice_index: integration.zohoinvoicing.invoice.entity.plural.label - integration.zohoinvoicing.title.label

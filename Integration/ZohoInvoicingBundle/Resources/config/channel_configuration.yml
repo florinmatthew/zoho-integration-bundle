@@ -1,0 +1,36 @@
+orocrm_channel:
+    entity_data:
+       -
+          name: Integration\ZohoInvoicingBundle\Entity\Tax
+          belongs_to:
+              integration: zoho
+              connector: tax 
+        
+       -
+          name: Integration\ZohoInvoicingBundle\Entity\Product
+          belongs_to:
+              integration: zoho
+              connector: product
+              
+       -
+          name: Integration\ZohoInvoicingBundle\Entity\Currencies
+          belongs_to:
+              integration: zoho
+              connector: currencies
+       
+       -
+          name: Integration\ZohoInvoicingBundle\Entity\Invoice
+          belongs_to:
+              integration: zoho
+              connector: invoice      
+        
+    channel_types:
+        zoho:
+            label: Zoho
+            entities:
+                - Integration\ZohoInvoicingBundle\Entity\Tax
+                - Integration\ZohoInvoicingBundle\Entity\Currencies
+                - Integration\ZohoInvoicingBundle\Entity\Product
+                - Integration\ZohoInvoicingBundle\Entity\Invoice
+            integration_type: zoho
+            lifetime_value: lifetime

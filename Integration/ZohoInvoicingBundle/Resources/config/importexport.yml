@@ -1,0 +1,105 @@
+## YAML Template.
+---
+parameters:
+    orocrm_zoho.zoho_integration.product.entity.class: Integration\ZohoInvoicingBundle\Entity\Product
+    orocrm_zoho.zoho_integration.channel_type.class: Integration\ZohoInvoicingBundle\Provider\ChannelType
+    orocrm_zoho.zoho_integration.product_connector.class: Integration\ZohoInvoicingBundle\Provider\Connector\ProductConnector
+    orocrm_zoho.zoho_integration.tax_connector.class: Integration\ZohoInvoicingBundle\Provider\Connector\TaxConnector
+    orocrm_zoho.zoho_integration.currencies_connector.class: Integration\ZohoInvoicingBundle\Provider\Connector\CurrenciesConnector
+    orocrm_zoho.zoho_integration.product_import.class: Integration\ZohoInvoicingBundle\Provider\ImportExport\Processor\ImportProductProcessor
+    orocrm_zoho.zoho_integration.tax_import.class: Integration\ZohoInvoicingBundle\Provider\ImportExport\Processor\ImportTaxProcessor
+    orocrm_zoho.zoho_integration.currencies_import.class: Integration\ZohoInvoicingBundle\Provider\ImportExport\Processor\ImportCurrenciesProcessor
+    orocrm_zoho.importexport.convertor.import_product.class: Integration\ZohoInvoicingBundle\Provider\ImportExport\Converter\ProductFieldsConverter
+    orocrm_zoho.importexport.convertor.import_tax.class: Integration\ZohoInvoicingBundle\Provider\ImportExport\Converter\TaxFieldsConverter
+    orocrm_zoho.importexport.normalizer.product.class: Integration\ZohoInvoicingBundle\Provider\ImportExport\Serializer\Normalizer\ProductNormalizer
+    orocrm_zoho.importexport.normalizer.tax.class: Integration\ZohoInvoicingBundle\Provider\ImportExport\Serializer\Normalizer\TaxNormalizer
+    orocrm_zoho.importexport.normalizer.currencies.class: Integration\ZohoInvoicingBundle\Provider\ImportExport\Serializer\Normalizer\CurrenciesNormalizer
+    orocrm_zoho.entity.product.class: Integration\ZohoInvoicingBundle\Entity\Product
+services:
+    
+    #Import processors
+    orocrm_zoho.importexport.processor.import_abstract:
+        abstract: true
+        calls:
+             - [setConnectorContextMediator, [@oro_integration.provider.connector_context_mediator]]
+             - [setLogger, [@oro_integration.logger.strategy]]
+             - [setContextRegistry, [@oro_importexport.context_registry]]
+             
+    orocrm_zoho.importexport.processor.import_product:
+        parent: orocrm_zoho.importexport.processor.import_abstract
+        class: %orocrm_zoho.zoho_integration.product_import.class%
+        arguments:
+            - @integration.zohoinvoicingbundle.sync_helper.product
+
+    orocrm_zoho.importexport.processor.import_tax:
+        parent: orocrm_zoho.importexport.processor.import_abstract
+        class: %orocrm_zoho.zoho_integration.tax_import.class%
+        arguments:
+            - @integration.zohoinvoicingbundle.sync_helper.tax
+            
+    orocrm_zoho.importexport.processor.import_currencies:
+        parent: orocrm_zoho.importexport.processor.import_abstract
+        class: %orocrm_zoho.zoho_integration.currencies_import.class%
+        arguments:
+            - @integration.zohoinvoicingbundle.sync_helper.currencies
+
+        
+    #Converters
+    orocrm_zoho.importexport.convertor.import_product:
+        class: %orocrm_zoho.importexport.convertor.import_product.class%
+        parent: oro_importexport.data_converter.configurable
+        
+    orocrm_zoho.importexport.convertor.import_tax:
+        class: %orocrm_zoho.importexport.convertor.import_tax.class%
+        parent: oro_importexport.data_converter.configurable
+        
+    #Normalizers
+    orocrm_zoho.importexport.normalizer.product:
+        class: %orocrm_zoho.importexport.normalizer.product.class%
+        tags:
+            - { name: oro_importexport.normalizer }
+            
+    orocrm_zoho.importexport.normalizer.tax:
+        class: %orocrm_zoho.importexport.normalizer.tax.class%
+        tags:
+            - { name: oro_importexport.normalizer }
+            
+    orocrm_zoho.importexport.normalizer.currencies:
+        class: %orocrm_zoho.importexport.normalizer.currencies.class%
+        tags:
+            - { name: oro_importexport.normalizer }
+    
+    #Integration type
+    orocrm_zoho.zoho_integration.channel_type:
+        class: %orocrm_zoho.zoho_integration.channel_type.class%
+        tags:
+            - { name: oro_integration.channel, type: zoho }
+            
+    #Connectors
+    orocrm_zoho.zoho_integration.product_connector:
+        class: %orocrm_zoho.zoho_integration.product_connector.class%
+        arguments:
+          - @oro_importexport.context_registry
+          - @oro_integration.logger.strategy
+          - @oro_integration.provider.connector_context_mediator
+        tags:
+          - { name: oro_integration.connector, type: product, channel_type: zoho }
+          
+    orocrm_zoho.zoho_integration.tax_connector:
+        class: %orocrm_zoho.zoho_integration.tax_connector.class%
+        arguments:
+          - @oro_importexport.context_registry
+          - @oro_integration.logger.strategy
+          - @oro_integration.provider.connector_context_mediator
+        tags:
+          - { name: oro_integration.connector, type: tax, channel_type: zoho }
+          
+    orocrm_zoho.zoho_integration.currencies_connector:
+        class: %orocrm_zoho.zoho_integration.currencies_connector.class%
+        arguments:
+          - @oro_importexport.context_registry
+          - @oro_integration.logger.strategy
+          - @oro_integration.provider.connector_context_mediator
+        tags:
+          - { name: oro_integration.connector, type: currencies, channel_type: zoho } 
+    
