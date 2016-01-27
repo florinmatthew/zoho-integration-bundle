@@ -1,2 +1,3 @@
 # OroCRM channel integration with Zoho Invoice.
-## This is a test bundle.
+## Main configuration.
+### 1) Channel configuration.
